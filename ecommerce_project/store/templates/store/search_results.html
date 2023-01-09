@@ -1,0 +1,42 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% if no_results == True %}
+  <div class="search-no-results">
+    <b>No Results</b>
+  </div>
+
+{% elif no_results == False %}
+  <div class="search-top-div">
+    <b>Search Results :-</b>
+  </div>
+
+  {% for result in search_results %}
+  <div class="card mb-3 results-card">
+    <div class="row no-gutters results-img-div">
+      <div class="col-md-3 ">
+        <a style="color:black;" href="product-view/{{result.product_id}}">
+          <img src="{{ result.product_img.url }}" class="card-img" alt="..." style="height: 260px;">
+        </a>
+      </div>
+      <div class="col-md-9 ">
+        <div class="card-body">
+          <h5 class="card-title search-card-title">
+            <a style="color:black;" href="product-view/{{result.product_id}}">{{ result.product_name }}</a style="color:black;" href="product-view/{{result.product_id}}">
+          </h5>
+          <p class="card-text">
+            <a style="color:black;" href="product-view/{{result.product_id}}">{{ result.product_title }}</a>
+          </p>
+          <p class="card-text search-card-price"><b>$ {{ result.product_price }}</b></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}
+
+
+{% endblock content %}

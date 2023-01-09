@@ -1,0 +1,205 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+
+
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row checkout-row">
+
+        <!------------------------------------------------ <Left Card> ------------------------------------------------>
+        <div class="col-lg-6 modified-card">
+            <div id="shipping-card" class=" row-lg-12 card">
+
+                <form id="shipping-form" method="post">
+                  {% csrf_token %}
+                  <ul class="list-group list-group-flush">
+
+                    <!--First if-else statement-->
+                    {% if user.is_authenticated %}
+                        <script type="text/javascript">var user_js = "defined_user"</script>
+                    {% else %}
+                        <script type="text/javascript">var user_js = "Anonymous_user"</script>
+                        <li class="list-group-item">
+                            <div class="row left-card-top-row">
+                                <div class="col-md-6"><input class="checkout-input" placeholder="Name" id="name"></div>
+                                <div class="col-md-6"><input class="checkout-input" placeholder="Email" id="email"></div>
+                            </div>
+                        </li>
+                    {% endif %}
+
+                    <!--Second if-else statement-->
+                    {% if shipping == True %}
+                        <script type="text/javascript">var shipping_js = "True"</script>
+                        <li class="list-group-item left-card-second-row"><strong style="font-size: 1.2rem;">Shipping Information :</strong></li>
+
+                        <li class="list-group-item">
+                            <div class="row left-card-third-row-1">
+                                <div class="col-md-6"><input class="checkout-input" placeholder="Address" id="address"></div>
+                                <div class="col-md-6"><input class="checkout-input" placeholder="Pin Code" id="pincode"></div>
+                            </div>
+                            <div class="row left-card-third-row-2">
+                                <div class="col-md-6"><input class="checkout-input" placeholder="City" id="city"></div>
+                                <div class="col-md-6"><input class="checkout-input" placeholder="State" id="state"></div>
+                            </div>
+                        </li>
+                    {% else %}
+                      <script type="text/javascript">var shipping_js = "False"</script>
+                    {% endif %}
+                  </ul>
+
+                  <!--Third if-else statement-->
+                  {% if user.is_authenticated and shipping == False %}
+                     <script type="text/javascript">var enablePayment = 'True';</script>
+                  {% else %}
+                    <script type="text/javascript">var enablePayment = 'False';</script>
+                    <div class="card-footer d-grid left-card-bottom-row">
+                        <button id="submit-button" class="btn btn-success" type="submit">Continue</button>
+                    </div>
+                  {% endif %}
+
+                </form>
+
+            </div>
+
+            <div id="payment-card" class="row-lg-12 card hidden">
+                <div class="payment-card-element"><strong>Payment Options</strong></div>
+                <button type="submit" id="make-payment" class="btn btn-success payment-card-element">Make Payment</button>
+            </div>
+        </div>
+
+
+        <!----------------------------------------------- <Right Card> ----------------------------------------------->
+        <div class="col-lg-6">
+            <div class="card">
+              <ul class="list-group list-group-flush">
+
+                <li class="list-group-item right-card-top-row">
+                    <a class="btn btn-outline-dark" href="{% url 'cart' %}">
+                        <strong>&#8592;  Back to Cart</strong>
+                    </a>
+                </li>
+
+                <li class="list-group-item right-card-second-row">
+                    <div style="font-size: 34px;"><strong>Order Summary</strong></div>
+                </li>
+
+                {% for item in items %}
+                <li class="list-group-item right-card-third-row">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <img class="checkout-orderitem-img" src="{{item.product.image.url}}" alt="product image">
+                        </div>
+                        <div class="col-sm-3">{{ item.product.name }}</div>
+                        <div class="col-sm-3">{{ item.product.price|floatformat:2 }}&#8377;</div>
+                        <div class="col-sm-2">&#215; {{ item.quantity }}</div>
+                    </div>
+                </li>
+                {% endfor %}
+
+              </ul>
+              <div class="card-footer right-card-bottom-row">
+                  <div class="row" style="padding: 4px 2px; font-size: 1.5rem;"><strong>Items: {{ total_products }}</strong></div>
+                  <div class="row" style="padding: 4px 2px; font-size: 1.5rem;"><strong>Total: {{ cart_price|floatformat:2 }}&#8377;</strong></div>
+              </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+<!--This script is used to hide the 'Continue' button and show the payment options after the 'Continue' button is clicked-->
+<script type="text/javascript">
+    $("#shipping-form").submit(function(e){
+        e.preventDefault();
+        console.log('Shipping Form is submitted');
+
+        $("#submit-button").addClass("hidden");
+        $("#payment-card").removeClass("hidden");
+    });
+</script>
+
+<script type="text/javascript">
+    if (enablePayment == 'True') {
+      $("#shipping-card").addClass("hidden");
+      $("#payment-card").removeClass("hidden");
+    }
+</script>
+
+<script type="text/javascript">
+    function submitFormData() {
+        var shippingInfo = {
+            "address": null,
+            "pincode": null,
+            "city": null,
+            "state": null,
+        }
+
+        var userFormData = {
+        "name": null,
+        "email": null,
+        }
+
+
+        if (shipping_js == "True") {
+          shippingInfo.pincode = document.getElementById("pincode").value;;
+          shippingInfo.city = document.getElementById("city").value;;
+          shippingInfo.address = document.getElementById("address").value;
+          shippingInfo.state = document.getElementById("state").value;;
+        }
+
+        if (user_js == "Anonymous_user") {
+          userFormData.name = document.getElementById("name").value;;
+          userFormData.email = document.getElementById("email").value;;
+        }
+    }
+
+    $("#make-payment").click(function(e){
+        console.log('payment button clicked");
+        e.preventDefault();
+        submitFormData();
+    });
+</script>
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

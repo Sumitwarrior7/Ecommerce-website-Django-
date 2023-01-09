@@ -1,0 +1,112 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="container-fluid">
+    <div id="header-row" class="row my-row">
+        <div class="card border-dark first-card">
+          <div class="card-header">
+              <button type="button" class="btn btn-outline-dark">
+                  <a class="cart-continue-shopping" href="{% url 'store' %}" style="">
+                      <strong>&#8592;  Continue Shopping</strong>
+                  </a>
+              </button>
+          </div>
+
+          <div class="card-body text-dark">
+              <div class="row" style="height: 60px;">
+                  <div class="col-lg-3">
+                      <strong>Items: {{ total_products }}</strong>
+                  </div>
+                  <div class="col-lg-3">
+                      <strong>Total:  {{ cart_price|floatformat:2 }}&#8377;</strong>
+                  </div>
+                  <div class="col-lg-6">
+                      <button type="button" class="btn btn-success" style="float: right;">
+                          <a class="text-white" href="{% url 'checkout' %}">Checkout</a>
+                      </button>
+                  </div>
+              </div>
+          </div>
+
+        </div>
+    </div>
+
+    {% for item in items %}
+    <div class="row my-row">
+        <div class="card border-dark mb-3 second-card">
+        <div class="row">
+
+            <div class="col-lg-3">
+              <div class="card-header text-dark"><strong>Image</strong></div>
+              <div class="card-body text-body customized-card-body">
+                <div class="card-title">
+                    <img class="cart-orderitem-img" src="{{item.product.image.url}}" alt="product image">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3">
+              <div class="card-header text-dark"><strong>Item</strong></div>
+              <div class="card-body customized-card-body">
+                <h5 class="card-title">{{item.product.name}}</h5>
+              </div>
+            </div>
+
+            <div class="col-lg-2">
+              <div class="card-header text-dark"><strong>Quantity</strong></div>
+              <div class="card-body customized-card-body">
+                <div class="card-title">
+                    <div class="row">
+                        <div class="col-sm-2"><strong>{{item.quantity}}</strong></div>
+                        <div class="col-sm-10">
+                            <div class="row">
+                                <a style="color:black;" data-product="{{item.product.id}}" data-action="add" type="button" class="btn-update">&#8896;</a>
+                            </div>
+                            <div class="row">
+                                <a style="color:black;" data-product="{{item.product.id}}" data-action="remove" type="button" class="btn-update">&#8897;</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-2">
+              <div class="card-header text-dark"><strong>Price</strong></div>
+              <div class="card-body customized-card-body">
+                <h5 class="card-title">{{ item.product.price|floatformat:2 }}&#8377;</h5>
+              </div>
+            </div>
+
+            <div class="col-lg-2">
+              <div class="card-header text-dark"><strong>Total</strong></div>
+              <div class="card-body customized-card-body">
+                <h5 class="card-title">{{ item.ordered_item_price|floatformat:2 }}&#8377;</h5>
+              </div>
+            </div>
+
+        </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

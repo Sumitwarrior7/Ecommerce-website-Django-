@@ -1,0 +1,26 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="row card-row">
+    {% for product in products %}
+        <div class="col-lg-3 col-card">
+            <div class="card product-card" style="width: 22rem;">
+              <img class="card-img-top card-image" src="media/{{ product.image }}" alt="product-box-img">
+              <div class="card-body">
+                <a class="card-text product-view-anchor" href="/product-view/{{product.id}}">{{product.name}}</a>
+                <hr>
+                <div class="card-body card-bottom">
+                    <button data-product="{{product.id}}" data-action="add" type="button" class="btn btn-outline-dark btn-update">Add to Cart</button>
+                    <h4 class="price-h4">&#8377; {{product.price|floatformat:2}}</h4>
+                </div>
+              </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}
+
